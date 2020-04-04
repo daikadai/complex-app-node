@@ -5,6 +5,25 @@ let User = function(data) {
   this.errors = [];
 }
 
+User.prototype.cleanUp = function() {
+  if (typeof(this.data.username) != "string") {
+    this.data.username = "";
+  }
+  if (typeof(this.data.email) != "string") {
+    this.data.email = "";
+  }
+  if (typeof(this.data.passwowrd) != "string") {
+    this.data.password = "";
+  }
+
+  // get rid of any bogus properties
+  this.data = {
+    username: this.data.username.trim().toLowerCase(),
+    email: this.data.email.trim().toLowerCase(),
+    password: this.data.password
+  }
+}
+
 User.prototype.validate = function() {
   if (this.data.username == "") {
     this.errors.push("You must provide a username.");
@@ -34,6 +53,7 @@ User.prototype.validate = function() {
 
 User.prototype.register = function() {
   // Step #1 : validate user data
+  this.cleanUp();
   this.validate();
 
   // Step #2 : Only if there are no validation errors
