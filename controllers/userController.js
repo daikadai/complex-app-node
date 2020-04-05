@@ -5,10 +5,13 @@ exports.login = function(req,res) {
   user.login().then(function(result) {
     req.session.user = { favColor: "blue", username: user.data.username };
     req.session.save(function() {
-      res.redirect('/')
+      res.redirect('/');
     });
   }).catch(function(e) {
-    res.send(e);
+    req.flash('errors', e)
+    req.session.save(function() {
+      res.redirect('/');
+    })
   });
 }
 
@@ -31,6 +34,6 @@ exports.home = function(req, res) {
   if( req.session.user ) {
     res.render('home-dashboard', {username: req.session.user.username});
   } else {  
-    res.render('home-guest');
+    res.render('home-guest', {errors: req.flash('errors')});
   }
 }
